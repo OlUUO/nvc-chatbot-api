@@ -90,11 +90,18 @@ function formatReply(text) {
     .replace(/\n/g, '<br>');
 }
 
-// 즉시 1회 + 레이아웃 확정 후 2회 더 내려, 폰트/이모지 로딩으로 높이가 늦게 늘어나도 최하단을 유지한다.
+// 즉시 1회 + 다음 프레임에도 내려서 늦게 확정되는 높이까지 맞춘다.
 function scrollChat() {
   chat.scrollTop = chat.scrollHeight;
   requestAnimationFrame(() => { chat.scrollTop = chat.scrollHeight; });
-  requestAnimationFrame(() => requestAnimationFrame(() => { chat.scrollTop = chat.scrollHeight; }));
+}
+
+// AI 응답은 칩·선택지·문장 카드·웹폰트 로딩으로 최종 높이가 늦게 늘어난다.
+// 채팅 내용이 변할 때마다 최하단으로 맞춰 항상 마지막 답변이 보이도록 유지한다.
+new MutationObserver(() => { chat.scrollTop = chat.scrollHeight; })
+  .observe(chat, { childList: true, subtree: true });
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => { chat.scrollTop = chat.scrollHeight; });
 }
 
 // 짧은 햅틱 — 지원 기기(Android Chrome 등)에서만 동작, 미지원 시 무시
