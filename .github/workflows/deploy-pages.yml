@@ -27,6 +27,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Pages 설정
         uses: actions/configure-pages@v5
+        with:
+          # Pages가 아직 활성화되지 않은 경우 워크플로우가 직접 활성화한다
+          enablement: true
       - name: public/ 폴더 업로드
         uses: actions/upload-pages-artifact@v3
         with:
