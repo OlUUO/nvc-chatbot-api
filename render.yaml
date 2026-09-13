@@ -1,0 +1,19 @@
+# Render 자동 배포 설정 (Blueprint)
+# 사용법: 아래 "Deploy to Render" 링크로 접속하면 이 설정이 자동 적용됩니다.
+# OPENAI_API_KEY만 직접 입력하면 됩니다 (sync: false = 배포 화면에서 입력 요구).
+
+services:
+  - type: web
+    name: nvc-buddy
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_BASE_URL
+        value: https://mlapi.run/df92d0c6-da93-4332-89fb-a8bd6d49d647/v1
+      - key: OPENAI_MODEL
+        value: lgai-exaone/exaone-4.5-33b
+    healthCheckPath: /api/health
