@@ -1,0 +1,36 @@
+name: GitHub Pages 배포 (데모 모드)
+
+# main 브랜치에 push하면 public/ 폴더를 GitHub Pages로 자동 배포합니다.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시 배포 방지: 새 배포가 시작되면 이전 실행을 취소
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+      - name: Pages 설정
+        uses: actions/configure-pages@v5
+      - name: public/ 폴더 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+      - name: Pages 배포
+        id: deployment
+        uses: actions/deploy-pages@v4
